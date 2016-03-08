@@ -1,0 +1,13 @@
+[package]
+authors = ["JustANull <reid.levenick@gmail.com>"]
+name = "pic2term"
+version = "0.0.1"
+
+[dependencies]
+ansi_term = "0.7.2"
+clap = "2.1.1"
+conv = "0.3.1"
+image = "0.6.1"
+itertools = "0.4.10"
+take_mut = "0.1.3"
+termsize = "0.1.1"
