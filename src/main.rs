@@ -178,19 +178,24 @@ fn main() {
         .expect("Unable to determine terminal size, pass --width or --height flags");
     let filter = determine_filter(matches.value_of("filter").unwrap());
 
-    let indices = dither(imageops::resize(&img, w as u32, h as u32, filter), &ANSI_COLORS);
-    let rows = indices.chunks(w as usize).chunks_lazy(2);
+    // Cut off the first 16 indices since users tend to customize those
+    let indices = dither(imageops::resize(&img, w as u32, h as u32, filter), &ANSI_COLORS[16..]);
+    // Bump the indices we got back up by 16 to adjust
+    let rows = indices.into_iter().map(|n| (n + 16) as u8).chunks_lazy(w as usize * 2);
     for mut pair in rows.into_iter() {
-        let upper = pair.next().unwrap();
-        let lower = pair.next();
+        let upper = pair.by_ref().take(w as usize).collect::<Vec<_>>();
+        let mut lower = pair.take(w as usize).peekable();
 
-        println!("{}", ANSIStrings(&match lower {
-            Some(lower) => (0..w as usize).map(|idx| {
-                Colour::Fixed(lower[idx] as u8).on(Colour::Fixed(upper[idx] as u8)).paint("\u{2584}")
-            }).collect::<Vec<_>>(),
-            None => (0..w as usize).map(|idx| {
-                Colour::Fixed(upper[idx] as u8).paint("\u{2580}")
-            }).collect::<Vec<_>>(),
+        println!("{}", ANSIStrings(&if lower.peek().is_some() {
+            lower.map(Colour::Fixed)
+                .zip(upper.into_iter().map(Colour::Fixed))
+                .map(|(lower, upper)| lower.on(upper))
+                .map(|c| c.paint("\u{2584}"))
+                .collect::<Vec<_>>()
+        } else {
+            upper.into_iter().map(Colour::Fixed)
+                .map(|c| c.paint("\u{2580}"))
+                .collect::<Vec<_>>()
         }));
     }
 }
