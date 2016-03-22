@@ -73,9 +73,10 @@ fn determine_filter(filter_str: &str) -> FilterType {
     }
 }
 fn is_u16(s: String) -> Result<(), String> {
-    s.parse::<u16>()
-        .map(|_| ())
-        .map_err(|e| e.to_string())
+    match s.parse::<u16>() {
+        Ok(_) => Ok(()),
+        Err(e) => Err(e.to_string()),
+    }
 }
 
 fn dither(img: RgbImage, colors: &[[u8; 3]]) -> Vec<usize> {
@@ -143,7 +144,7 @@ fn dither(img: RgbImage, colors: &[[u8; 3]]) -> Vec<usize> {
 
 fn main() {
     let matches = App::new("pic2term")
-        .version("0.0.2")
+        .version("0.1.0")
         .author("Lyn Levenick <lyn.levenick@gmail.com>")
         .about("Renders images to the terminal with Unicode characters")
         .arg(Arg::with_name("width")

@@ -1,7 +1,7 @@
 [package]
 authors = ["Lyn Levenick <lyn.levenick@gmail.com>"]
 name = "pic2term"
-version = "0.0.1"
+version = "0.1.0"
 
 [dependencies]
 ansi_term = "0.7.2"

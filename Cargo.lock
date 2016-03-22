@@ -1,6 +1,6 @@
 [root]
 name = "pic2term"
-version = "0.0.1"
+version = "0.1.0"
 dependencies = [
  "ansi_term 0.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "clap 2.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
